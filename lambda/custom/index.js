@@ -14,28 +14,77 @@ exports.handler = function(event, context, callback) {
   try {
     if (event.session.new) {
 
-      console.log("request type", event.request.type);
+    //   console.log("Request Type: ", event.request.type);
+
+    //   console.log("Intent: ", event.request.intent.name);
 
       if (event.request.type === 'LaunchRequest') {
         context.succeed(generateResponse(buildSpeechletResponse("Hi, I'm Bus Buddy", true), {}))
       }
 
       switch (event.request.intent.name) {
-        case "getNextBusIntent":
-          var busStopCode = 53444;
-          getNapTanCode(busStopCode, function(napTanCode) {
+
+        case "GetNextBusIntent":
+        // console.log("Intent: ", event.request.intent.slots);
+        //   var busStopCode = event.request.intent.slots.busStopCode.value;
+        //   var busStopCode = 53444;
+        var napTanCode; 
+        var params = {
+            TableName: 'userNaptanCode', 
+            Key: {
+                'userId': event.session.user.userId
+            }
+        }; 
+        dynamodb.get(params, function(err, data) {
+            if (err) {
+                console.log("Failed to save naptan code" + err)
+            } else {
+                napTanCode = data.Item.napTanCode; 
+                getApiData(napTanCode, function(jsonText) {
+                    var station = jsonText[0]['stationName'];
+                    var time = new Date(jsonText[0]['expectedArrival']).toLocaleTimeString();
+                    context.succeed(
+                      generateResponse(
+                        buildSpeechletResponse("It will arrive at " + station + " stop at " + time, true), {})
+                    )
+                  });
+
+            }
+        }); 
+          // var napTanCode = '490010331E';
+        break;
+
+        case "SetBusStopIntent":
+            var busStopCode = parseInt(event.request.intent.slots.busStopCode.value);
+            // var busStopCode = 53444;
+            getNapTanCode(busStopCode, function(napTanCode) {
             getApiData(napTanCode, function(jsonText) {
                 var station = jsonText[0]['stationName'];
                 var time = new Date(jsonText[0]['expectedArrival']).toLocaleTimeString();
                 context.succeed(
-                  generateResponse(
+                    generateResponse(
                     buildSpeechletResponse("It will arrive at " + station + " stop at " + time, true), {})
                 )
-              });
-          });
-          // var napTanCode = '490010331E';
-          
-          break;
+                });
+
+                var params = {
+                    TableName: 'userNaptanCode', 
+                    Item: {
+                        userId: event.session.user.userId, 
+                        napTanCode: napTanCode
+                    }
+                }; 
+                dynamodb.put(params, function(err, data) {
+                    if (err) {
+                        console.log("Failed to save naptan code" + err)
+                    } else {
+                        console.log("Saved correctly")
+                    }
+                
+                }); 
+            });
+      break;
+
         default:
           context.fail('INVALID REQUEST TYPE: ${event.request.type}')
       }
@@ -68,7 +117,7 @@ function getNapTanCode(busStopCode, callAPI) {
   var result = false;
 
   var params = {
-    TableName: 'busStopCodeLookupFull',
+    TableName: 'busStopCodeLookupFull_v3',
     Key:{
         "busStopCode": busStopCode
     }

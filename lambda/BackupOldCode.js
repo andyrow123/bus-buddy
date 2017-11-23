@@ -1,4 +1,5 @@
 exports.handler = (event, context) => {
+    
     try {
         if (event.session.new) {
             console.log("request type", event.request.type); 
