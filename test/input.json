@@ -1,0 +1,28 @@
+{
+  "session": {
+    "sessionId": "SessionId.Session1",
+    "application": {
+      "applicationId": "amzn1.ask.skill.e15d8f00-11e4-4d3c-a3b6-90e1a4624ba0"
+    },
+    "user": {
+      "userId": "amzn1.ask.account.testaccount1"
+    },
+    "new": true
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "EdwRequestId.TestSession1",
+    "timestamp": "2016-05-19T01:07:55Z",
+    "intent": {
+      "name": "MyBusIntent",
+      "slots": {
+        "phraseNumber": {
+          "name": "phraseNumber",
+          "value": "1"
+        }
+      }
+    },
+    "locale": "en-GB"
+  },
+  "version": "1.0"
+}
