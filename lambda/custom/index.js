@@ -23,16 +23,18 @@ exports.handler = function(event, context, callback) {
       switch (event.request.intent.name) {
         case "MyBusIntent":
           var busStopCode = 53444;
-          var napTanCode = getNapTanCode(busStopCode);
-          // var napTanCode = '490010331E';
-          getApiData(napTanCode, function(jsonText) {
-            var station = jsonText[0]['stationName'];
-            var time = new Date(jsonText[0]['expectedArrival']).toLocaleTimeString();
-            context.succeed(
-              generateResponse(
-                buildSpeechletResponse("It will arrive at " + station + " stop at " + time, true), {})
-            )
+          getNapTanCode(busStopCode, function(napTanCode) {
+            getApiData(napTanCode, function(jsonText) {
+                var station = jsonText[0]['stationName'];
+                var time = new Date(jsonText[0]['expectedArrival']).toLocaleTimeString();
+                context.succeed(
+                  generateResponse(
+                    buildSpeechletResponse("It will arrive at " + station + " stop at " + time, true), {})
+                )
+              });
           });
+          // var napTanCode = '490010331E';
+          
           break;
         default:
           context.fail('INVALID REQUEST TYPE: ${event.request.type}')
@@ -62,7 +64,7 @@ var generateResponse = (speechletResponse, sessionAttributes) => {
   }
 }
 
-function getNapTanCode(busStopCode) {
+function getNapTanCode(busStopCode, callback) {
   var result = false;
 
   var params = {
@@ -77,14 +79,17 @@ function getNapTanCode(busStopCode) {
       console.log(err + ' : ' + response.statusCode);
     } else {
       result = data.Item.naptanAtco;
+      callback(result);
     }
   });
 
-  return result;
+  
+//   return result;
 }
 
 function getApiData(napTanCode, callback) {
-  request('https://api.tfl.gov.uk/StopPoint/' + napTanCode + '/arrivals', function(error, response, body) {
+    var url = 'https://api.tfl.gov.uk/StopPoint/' + napTanCode + '/arrivals'
+  request(url, function(error, response, body) {
     if (!error && response.statusCode == 200) {
       // from within the callback, write data to response, essentially returning it.
       var jsonText = JSON.parse(body);
