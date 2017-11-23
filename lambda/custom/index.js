@@ -22,7 +22,7 @@ exports.handler = function(event, context, callback) {
 
       switch (event.request.intent.name) {
         case "MyBusIntent":
-          var busStopCode = 54245;
+          var busStopCode = 53444;
           var napTanCode = getNapTanCode(busStopCode);
           // var napTanCode = '490010331E';
           getApiData(napTanCode, function(jsonText) {
