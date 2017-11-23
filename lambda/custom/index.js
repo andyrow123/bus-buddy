@@ -4,7 +4,7 @@
 'use strict';
 const http = require('http');
 const request = require('request');
-const Alexa = require('alexa-sdk');
+// const Alexa = require('alexa-sdk');
 var AWS = require("aws-sdk");
 var dynamodb = new AWS.DynamoDB.DocumentClient({
   region: "eu-west-1"
@@ -21,7 +21,7 @@ exports.handler = function(event, context, callback) {
       }
 
       switch (event.request.intent.name) {
-        case "MyBusIntent":
+        case "getNextBusIntent":
           var busStopCode = 53444;
           getNapTanCode(busStopCode, function(napTanCode) {
             getApiData(napTanCode, function(jsonText) {
@@ -64,7 +64,7 @@ var generateResponse = (speechletResponse, sessionAttributes) => {
   }
 }
 
-function getNapTanCode(busStopCode, callback) {
+function getNapTanCode(busStopCode, callAPI) {
   var result = false;
 
   var params = {
@@ -79,12 +79,9 @@ function getNapTanCode(busStopCode, callback) {
       console.log(err + ' : ' + response.statusCode);
     } else {
       result = data.Item.naptanAtco;
-      callback(result);
+      callAPI(result);
     }
   });
-
-  
-//   return result;
 }
 
 function getApiData(napTanCode, callback) {

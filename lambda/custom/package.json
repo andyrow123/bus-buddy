@@ -1,7 +1,7 @@
 {
-  "name": "skill-sample-nodejs-fact-i18n",
+  "name": "buss-buddy",
   "version": "1.0.0",
-  "description": "I18n version of fact skill.",
+  "description": "Alexa skill to get bus stop information",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,10 +9,10 @@
   "keywords": [
     "alexa",
     "skill",
-    "fact"
+    "bus"
   ],
-  "author": "Amazon.com",
-  "license": "Apache-2.0",
+  "author": "Makers Team",
+  "license": "MIT",
   "dependencies": {
     "alexa-sdk": "^1.0.12",
     "request": "^2.83.0"
