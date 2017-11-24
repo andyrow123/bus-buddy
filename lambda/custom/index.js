@@ -36,18 +36,20 @@ exports.handler = function (event, context, callback) {
                         } else {
                             napTanCode = data.Item.napTanCode;
                             getApiData(napTanCode, function (jsonText) {
-                              var response = "";
+                              var response = "<speak>";
                               for (var i=0; i<3; i++)  {
                                 var station = jsonText[i]['stationName'];
                                 var time = timeFromNow(new Date(jsonText[i]['expectedArrival']));
                                 var lineName = jsonText[i]['lineName'];
-                                response += "<speak>Bus " + speechUtils.spellDigitOutput(lineName) + " will arrive at " + station + " stop, in " + time + ((time > 1) ? " minutes" : " minute") + "</speak>";
+                                response += "Bus " + speechUtils.spellDigitOutput(lineName) + " will arrive at " + station + " stop, in " + time + ((time > 1) ? " minutes" : " minute") + " ";
                               };
 
-                                context.succeed(
-                                    generateResponse(
-                                        buildSpeechletResponse(response, true), {})
-                                )
+                              response += "</speak>";
+
+                              context.succeed(
+                                  generateResponse(
+                                      buildSpeechletResponse(response, true), {})
+                              )
                             });
 
                         }
