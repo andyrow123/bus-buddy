@@ -35,8 +35,8 @@ exports.handler = function (event, context, callback) {
                             console.log("Failed to save naptan code" + err)
                         } else {
                             napTanCode = data.Item.napTanCode;
-                            var response = "";
                             getApiData(napTanCode, function (jsonText) {
+                              var response = "";
                               for (var i=0; i<3; i++)  {
                                 var station = jsonText[i]['stationName'];
                                 var time = timeFromNow(new Date(jsonText[i]['expectedArrival']));
