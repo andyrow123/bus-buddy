@@ -23,9 +23,6 @@ exports.handler = function (event, context, callback) {
             switch (event.request.intent.name) {
 
                 case "GetNextBusIntent":
-                    // console.log("Intent: ", event.request.intent.slots);
-                    //   var busStopCode = event.request.intent.slots.busStopCode.value;
-                    //   var busStopCode = 53444;
                     var napTanCode;
                     var params = {
                         TableName: 'userNaptanCode',
@@ -38,13 +35,18 @@ exports.handler = function (event, context, callback) {
                             console.log("Failed to save naptan code" + err)
                         } else {
                             napTanCode = data.Item.napTanCode;
+                            var response = "";
                             getApiData(napTanCode, function (jsonText) {
-                                var station = jsonText[0]['stationName'];
-                                var time = timeFromNow(new Date(jsonText[0]['expectedArrival']));
-                                var lineName = jsonText[0]['lineName'];
+                              for (var i=0; i<3; i++)  {
+                                var station = jsonText[i]['stationName'];
+                                var time = timeFromNow(new Date(jsonText[i]['expectedArrival']));
+                                var lineName = jsonText[i]['lineName'];
+                                response += "<speak>Bus " + speechUtils.spellDigitOutput(lineName) + " will arrive at " + station + " stop, in " + time + ((time > 1) ? " minutes" : " minute") + "</speak>";
+                              };
+
                                 context.succeed(
                                     generateResponse(
-                                        buildSpeechletResponse("<speak>Bus " + speechUtils.spellDigitOutput(lineName) + " will arrive at " + station + " stop, in " + time + ((time > 1) ? " minutes" : " minute") + "</speak>", true), {})
+                                        buildSpeechletResponse(response, true), {})
                                 )
                             });
 
@@ -55,7 +57,6 @@ exports.handler = function (event, context, callback) {
 
                 case "SetBusStopIntent":
                     var busStopCode = parseInt(event.request.intent.slots.busStopCode.value);
-                    // var busStopCode = 53444;
                     getNapTanCode(busStopCode, function (napTanCode) {
                         getApiData(napTanCode, function (jsonText) {
                             var station = jsonText[0]['stationName'];
@@ -184,7 +185,7 @@ function getStopBusesText(arrivals) {
 
 function timeFromNow(time) {
     var timeNow = new Date;
-    
+
     time = time.getTime() - timeNow.getTime();
 
     return Math.round(time / 60000); // minutes
