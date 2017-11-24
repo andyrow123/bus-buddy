@@ -21,31 +21,31 @@ var region = 'eu-west-1';
 var aws = require('aws-sdk');
 
 function context() {
-   var context = require('./context.json');
-   context.done = function(error, result) {
-       console.log('context.done');
-       console.log(error);
-       console.log(result);
-       process.exit();
-   }
-   context.succeed = function(result) {
-       console.log('context.succeed');
-       console.log(result);
-       process.exit();
-   }
-   context.fail = function(error) {
-       console.log('context.fail');
-       console.log(error);
-       process.exit();
-   }
-   return context;
+    var context = require('./context.json');
+    context.done = function (error, result) {
+        console.log('context.done');
+        console.log(error);
+        console.log(result);
+        process.exit();
+    }
+    context.succeed = function (result) {
+        console.log('context.succeed');
+        console.log(result);
+        process.exit();
+    }
+    context.fail = function (error) {
+        console.log('context.fail');
+        console.log(error);
+        process.exit();
+    }
+    return context;
 }
 aws.config.region = region;
 var sts = new aws.STS();
 sts.assumeRole({
     RoleArn: roleArn,
     RoleSessionName: 'emulambda'
-}, function(err, data) {
+}, function (err, data) {
     if (err) { // an error occurred
         console.log('Cannot assume role');
         console.log(err, err.stack);
@@ -60,16 +60,19 @@ sts.assumeRole({
         var Module = require('module');
         var originalRequire = Module.prototype.require;
 
-        Module.prototype.require = function(){
-          if (arguments[0] === 'aws-sdk'){
-            return aws;
-          } else {
-            return originalRequire.apply(this, arguments);
-          }
+        Module.prototype.require = function () {
+            if (arguments[0] === 'aws-sdk') {
+                return aws;
+            } else {
+                return originalRequire.apply(this, arguments);
+            }
         };
 
         var lambda = require('../lambda/custom/index.js');
-        var event = require('./input.json');
-        lambda.handler(event, context());
+        var inputGetNextBusIntent = require('./inputGetNextBusIntent.json');
+        var inputGetStopBusesIntent = require('./inputGetStopBusesIntent.json');
+        var inputSetBusStopIntent = require('./inputSetBusStopIntent.json');
+
+        lambda.handler(inputGetNextBusIntent, context());
     }
 });

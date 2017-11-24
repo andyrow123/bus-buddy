@@ -1,0 +1,28 @@
+{
+  "session": {
+    "sessionId": "SessionId.Session1",
+    "application": {
+      "applicationId": "amzn1.ask.skill.ebed816e-442c-454c-a739-aa5cd2e3eb84"
+    },
+    "user": {
+      "userId": "amzn1.ask.account.testaccount1"
+    },
+    "new": true
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "EdwRequestId.TestSession1",
+    "timestamp": "2016-05-19T01:07:55Z",
+    "intent": {
+      "name": "SetBusStopIntent",
+      "slots": {
+        "busStopCode": {
+          "name": "busStopCode",
+          "value": 53444
+        }
+      }
+    },
+    "locale": "en-GB"
+  },
+  "version": "1.0"
+}
