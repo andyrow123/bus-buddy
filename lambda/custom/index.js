@@ -38,10 +38,12 @@ exports.handler = function (event, context, callback) {
                             getApiData(napTanCode, function (jsonText) {
                               var response = "<speak>";
                               for (var i=0; i<3; i++)  {
-                                var station = jsonText[i]['stationName'];
-                                var time = timeFromNow(new Date(jsonText[i]['expectedArrival']));
-                                var lineName = jsonText[i]['lineName'];
-                                response += "Bus " + speechUtils.spellDigitOutput(lineName) + " will arrive at " + station + " stop, in " + time + ((time > 1) ? " minutes" : " minute") + " ";
+                                if (i < jsonText.length - 1) {
+                                  var station = jsonText[i]['stationName'];
+                                  var time = timeFromNow(new Date(jsonText[i]['expectedArrival']));
+                                  var lineName = jsonText[i]['lineName'];
+                                  response += "Bus " + speechUtils.spellDigitOutput(lineName) + " will arrive at " + station + " stop, in " + time + ((time > 1) ? " minutes" : " minute") + ", ";
+                                }
                               };
 
                               response += "</speak>";
@@ -162,7 +164,9 @@ function getApiData(napTanCode, callback) {
         if (!error && response.statusCode == 200) {
             // from within the callback, write data to response, essentially returning it.
             var jsonText = JSON.parse(body);
-            callback(jsonText);
+            callback(jsonText.sort(function(a, b) {
+                return a.expectedArrival > b.expectedArrival;
+            }));
         } else {
             console.log(error + ' : ' + response.statusCode);
         }
