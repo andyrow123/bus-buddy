@@ -24,7 +24,7 @@ Thirdly, we hooked our programme up to two separate tables on Amazon's database 
 
 If the device receives and understands the relevant message, code saved to Lambda queries the TfL API via a simple http get request. The data is returned as json, which is parsed and converted into a format that the device can read back to the user. Here is a detailed diagram of the flow of the programme:
 
-![alt text](https://github.com/andyrow123/bus-buddy/img/diagram.jpg "Flow through Bus Buddy application")
+![alt text](https://github.com/andyrow123/bus-buddy/blob/master/img/diagram.jpg "Flow through Bus Buddy application")
 
 ## What were the challenges?
 Figuring out how the different parts of Amazon's infrastructure fitted together was quite complicated, given the time available (one week). Testing was also a challenge. Although Amazon makes a bespoke testing framework available on the web interface to the Lambda service, it is only possible to use this once you have uploaded and saved over your previous iteration, with no easy way to roll back the changes if you find your tests unexpectedly fail.
