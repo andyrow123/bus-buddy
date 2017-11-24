@@ -15,7 +15,7 @@
 // the role must have a trusted policy with
 // "lambda.amazonaws.com" and "arn:aws:iam::<YOUR ACCOUNT ID>:user/<YOUR USER>"
 
-var roleArn = 'arn:aws:iam::918538633814:role/localAlexaDebugging';
+var roleArn = 'xxxxx'; //Add debugging user role
 var region = 'eu-west-1';
 /* DO NOT MAKE CHANGE BELOW THIS */
 var aws = require('aws-sdk');
